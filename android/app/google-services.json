@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "67492072688",
+    "project_id": "homzen-shoping",
+    "storage_bucket": "homzen-shoping.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67492072688:android:158b39c1dc9a2d20490635",
+        "android_client_info": {
+          "package_name": "com.homzen.shoping.service.siam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnH4MI4LvzEuSY9kHqq9eDPxmxKS2CU20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,28 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "homzen-shoping",
+          "appId": "1:67492072688:android:158b39c1dc9a2d20490635",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "homzen-shoping",
+          "configurations": {
+            "android": "1:67492072688:android:158b39c1dc9a2d20490635",
+            "ios": "1:67492072688:ios:0ec8e6f6589e6fc9490635",
+            "macos": "1:67492072688:ios:0ec8e6f6589e6fc9490635",
+            "web": "1:67492072688:web:f9f6c12cf898f0c6490635",
+            "windows": "1:67492072688:web:ad9e34c87c294887490635"
+          }
+        }
+      }
+    }
+  }
+}
