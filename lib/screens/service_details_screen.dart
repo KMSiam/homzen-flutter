@@ -522,28 +522,34 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
 
                 setState(() => _isBooking = true);
                 
+                // Capture context-dependent values before async operation
+                final navigator = Navigator.of(context);
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final timeString = _selectedTime.format(context);
+                
                 try {
                   // Save booking to history
                   await BookingService().addBooking(
                     widget.service,
                     _quantity,
                     _selectedDate,
-                    _selectedTime.format(context),
+                    timeString,
                     _totalPrice,
                   );
                   
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Service booked successfully!'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                  
-                  // Navigate to My Bookings screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyBookingsScreen()),
-                  );
+                  if (mounted) {
+                    scaffoldMessenger.showSnackBar(
+                      const SnackBar(
+                        content: Text('Service booked successfully!'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    
+                    // Navigate to My Bookings screen
+                    navigator.pushReplacement(
+                      MaterialPageRoute(builder: (context) => const MyBookingsScreen()),
+                    );
+                  }
                 } finally {
                   if (mounted) {
                     setState(() => _isBooking = false);

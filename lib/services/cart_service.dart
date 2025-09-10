@@ -67,9 +67,9 @@ class CartService {
         'cartUpdatedAt': Timestamp.now(),
       }, SetOptions(merge: true));
       
-      print('✅ Cart saved to Firestore');
+      // Cart saved to Firestore
     } catch (e) {
-      print('❌ Failed to save cart: $e');
+      // Failed to save cart
     }
   }
 
@@ -84,9 +84,9 @@ class CartService {
         'cartUpdatedAt': FieldValue.delete(),
       });
       
-      print('✅ Cart cleared from Firestore');
+      // Cart cleared from Firestore
     } catch (e) {
-      print('❌ Failed to clear cart: $e');
+      // Failed to clear cart
     }
   }
 
@@ -99,7 +99,7 @@ class CartService {
     }
 
     try {
-      print('🛒 Loading cart from Firestore for user: ${user.uid}');
+      // Loading cart from Firestore
       
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
       
@@ -107,7 +107,7 @@ class CartService {
         final userData = userDoc.data();
         final cartArray = userData?['cart'] as List<dynamic>? ?? [];
         
-        print('Found ${cartArray.length} items in saved cart');
+        // Found items in saved cart
         _cartItems.clear();
         
         for (final itemData in cartArray) {
@@ -115,12 +115,12 @@ class CartService {
           _cartItems.add(item);
         }
         
-        print('✅ Loaded ${_cartItems.length} items into cart');
+        // Loaded items into cart
       } else {
-        print('No saved cart found');
+        // No saved cart found
       }
     } catch (e) {
-      print('❌ Error loading cart: $e');
+      // Error loading cart
     }
   }
 }

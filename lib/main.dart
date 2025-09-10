@@ -112,36 +112,73 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(0, Icons.home_rounded, 'Home'),
-                _buildNavItem(1, Icons.shopping_basket_rounded, 'Grocery'),
-                _buildNavItem(2, Icons.shopping_bag_rounded, 'Cart'),
-                _buildNavItem(3, Icons.build_rounded, 'Services'),
-                _buildNavItem(4, Icons.person_rounded, 'Profile'),
-              ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        
+        // Show exit dialog only when on home screen (index 0)
+        if (_selectedIndex == 0) {
+          final shouldExit = await _showExitDialog(context);
+          if (shouldExit && context.mounted) {
+            Navigator.of(context).pop();
+          }
+        } else {
+          // Navigate back to home screen if not on home
+          setState(() => _selectedIndex = 0);
+        }
+      },
+      child: Scaffold(
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, -5),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavItem(0, Icons.home_rounded, 'Home'),
+                  _buildNavItem(1, Icons.shopping_basket_rounded, 'Grocery'),
+                  _buildNavItem(2, Icons.shopping_bag_rounded, 'Cart'),
+                  _buildNavItem(3, Icons.build_rounded, 'Services'),
+                  _buildNavItem(4, Icons.person_rounded, 'Profile'),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> _showExitDialog(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Exit App'),
+        content: const Text('Are you sure you want to exit?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Exit'),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 
   Widget _buildNavItem(int index, IconData icon, String label) {

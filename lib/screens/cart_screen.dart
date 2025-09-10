@@ -258,23 +258,26 @@ class _CartScreenState extends State<CartScreen> {
                 // Add order to order service
                 await OrderService().addOrder(cartItems, total);
                 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Order placed successfully!'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-                
-                setState(() {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Order placed successfully!'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                  
+                  setState(() {
+                    _isCheckingOut = false;
+                  });
+                  
                   _cartService.clearCart();
-                  _isCheckingOut = false;
-                });
-                
-                // Navigate to My Orders screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyOrdersScreen()),
-                );
+                  
+                  // Navigate to My Orders screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyOrdersScreen()),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,

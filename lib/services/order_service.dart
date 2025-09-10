@@ -12,7 +12,7 @@ class OrderService {
   List<Map<String, dynamic>> get orders => List.unmodifiable(_orders);
 
   Future<void> addOrder(List<Map<String, dynamic>> cartItems, double total) async {
-    print('🛒 Starting addOrder process...');
+    // Starting addOrder process
     final user = FirebaseAuth.instance.currentUser;
     
     // Create local order first
@@ -25,11 +25,11 @@ class OrderService {
     };
     
     _orders.insert(0, localOrder);
-    print('✅ Added order locally. Total orders: ${_orders.length}');
+    // Added order locally
     
     // Try to save to Firestore users collection if user is logged in
     if (user != null) {
-      print('🔐 User logged in for order: ${user.uid}');
+      // User logged in for order
       
       // Order data to add to user's document
       final orderData = {
@@ -43,43 +43,43 @@ class OrderService {
       };
 
       try {
-        print('🔥 Adding order to users collection...');
+        // Adding order to users collection
         
         // Add to orders array in user's document
         await _firestore.collection('users').doc(user.uid).update({
           'orders': FieldValue.arrayUnion([orderData])
         });
         
-        print('✅ SUCCESS! Order added to user document');
+        // SUCCESS! Order added to user document
         localOrder['id'] = orderData['id'] as String;
       } catch (e) {
-        print('❌ FAILED to save order: $e');
+        // FAILED to save order
         
         // If update fails, try to create the field
         try {
           await _firestore.collection('users').doc(user.uid).set({
             'orders': [orderData]
           }, SetOptions(merge: true));
-          print('✅ Created orders field and added order');
+          // Created orders field and added order
         } catch (e2) {
-          print('❌ Failed to create orders field: $e2');
+          // Failed to create orders field
         }
       }
     } else {
-      print('👤 No user logged in for order');
+      // No user logged in for order
     }
   }
 
   Future<void> loadUserOrders() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('No user logged in - clearing orders');
+      // No user logged in - clearing orders
       _orders.clear();
       return;
     }
 
     try {
-      print('Loading orders from users collection for user: ${user.uid}');
+      // Loading orders from users collection
       
       // Get user document
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
@@ -88,7 +88,7 @@ class OrderService {
         final userData = userDoc.data();
         final ordersArray = userData?['orders'] as List<dynamic>? ?? [];
         
-        print('Found ${ordersArray.length} orders in user document');
+        // Found orders in user document
         _orders.clear();
         
         // Convert and sort locally
@@ -111,18 +111,18 @@ class OrderService {
         ordersList.sort((a, b) => (b['date'] as DateTime).compareTo(a['date'] as DateTime));
         _orders.addAll(ordersList);
         
-        print('Loaded ${_orders.length} orders into local list');
+        // Loaded orders into local list
       } else {
-        print('User document does not exist');
+        // User document does not exist
       }
     } catch (e) {
-      print('Error loading orders from users collection: $e');
+      // Error loading orders from users collection
     }
   }
 
   int get orderCount => _orders.length;
 
   double get totalSpent {
-    return _orders.fold(0.0, (sum, order) => sum + (order['total'] as double));
+    return _orders.fold(0.0, (total, order) => total + (order['total'] as double));
   }
 }

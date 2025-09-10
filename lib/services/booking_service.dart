@@ -30,11 +30,11 @@ class BookingService {
     };
     
     _bookings.insert(0, localBooking);
-    print('✅ Added booking locally. Total bookings: ${_bookings.length}');
+    // Added booking locally
     
     // Try to save to Firestore users collection if user is logged in
     if (user != null) {
-      print('🔐 User logged in: ${user.uid}');
+      // User logged in
       
       // Booking data to add to user's document
       final bookingData = {
@@ -50,43 +50,43 @@ class BookingService {
       };
 
       try {
-        print('🔥 Adding booking to users collection...');
+        // Adding booking to users collection
         
         // Add to bookings array in user's document
         await _firestore.collection('users').doc(user.uid).update({
           'bookings': FieldValue.arrayUnion([bookingData])
         });
         
-        print('✅ SUCCESS! Booking added to user document');
+        // SUCCESS! Booking added to user document
         localBooking['id'] = bookingData['id'] as String;
       } catch (e) {
-        print('❌ FAILED to save booking: $e');
+        // FAILED to save booking
         
         // If update fails, try to create the field
         try {
           await _firestore.collection('users').doc(user.uid).set({
             'bookings': [bookingData]
           }, SetOptions(merge: true));
-          print('✅ Created bookings field and added booking');
+          // Created bookings field and added booking
         } catch (e2) {
-          print('❌ Failed to create bookings field: $e2');
+          // Failed to create bookings field
         }
       }
     } else {
-      print('👤 No user logged in');
+      // No user logged in
     }
   }
 
   Future<void> loadUserBookings() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('No user logged in - clearing bookings');
+      // No user logged in - clearing bookings
       _bookings.clear();
       return;
     }
 
     try {
-      print('Loading bookings from users collection for user: ${user.uid}');
+      // Loading bookings from users collection
       
       // Get user document
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
@@ -95,7 +95,7 @@ class BookingService {
         final userData = userDoc.data();
         final bookingsArray = userData?['bookings'] as List<dynamic>? ?? [];
         
-        print('Found ${bookingsArray.length} bookings in user document');
+        // Found bookings in user document
         _bookings.clear();
         
         // Convert and sort locally
@@ -125,12 +125,12 @@ class BookingService {
         bookingsList.sort((a, b) => (b['bookedAt'] as DateTime).compareTo(a['bookedAt'] as DateTime));
         _bookings.addAll(bookingsList);
         
-        print('Loaded ${_bookings.length} bookings into local list');
+        // Loaded bookings into local list
       } else {
-        print('User document does not exist');
+        // User document does not exist
       }
     } catch (e) {
-      print('Error loading bookings from users collection: $e');
+      // Error loading bookings from users collection
     }
   }
 
